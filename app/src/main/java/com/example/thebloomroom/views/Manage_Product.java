@@ -6,11 +6,11 @@ import android.os.Bundle;
 
 import com.example.thebloomroom.R;
 
-public class admin_area extends AppCompatActivity {
+public class Manage_Product extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_area);
+        setContentView(R.layout.activity_manage_product);
     }
 }

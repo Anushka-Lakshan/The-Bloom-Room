@@ -10,13 +10,13 @@ import android.widget.Toast;
 import com.example.thebloomroom.AlertMessage;
 import com.example.thebloomroom.R;
 import com.example.thebloomroom.models.User;
-import com.example.thebloomroom.models.UserDBModel;
+import com.example.thebloomroom.models.DBoperations;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class Login extends AppCompatActivity {
 
     TextInputLayout email, password;
-    UserDBModel userDBModel;
+    DBoperations DBoperations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +26,7 @@ public class Login extends AppCompatActivity {
         email = findViewById(R.id.login_email);
         password = findViewById(R.id.login_pass);
 
-        userDBModel = new UserDBModel(this);
+        DBoperations = new DBoperations(this);
     }
 
     public void gotoRegister(View v){
@@ -46,7 +46,7 @@ public class Login extends AppCompatActivity {
         }
 
         if(error.isEmpty()){
-            User user = userDBModel.login(email, password);
+            User user = DBoperations.login(email, password);
             if(user == null){
                 error = "Invalid email or password";
             }

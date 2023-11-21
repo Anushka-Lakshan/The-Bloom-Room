@@ -13,19 +13,13 @@
         android:theme="@style/Theme.TheBloomRoom"
         tools:targetApi="31">
         <activity
+            android:name=".views.Manage_Category"
+            android:exported="false" />
+        <activity
+            android:name=".views.Manage_Product"
+            android:exported="false" />
+        <activity
             android:name=".views.Admin_dashboard"
-            android:exported="false" />
-        <activity
-            android:name=".views.Main_page"
-            android:exported="false" />
-        <activity
-            android:name=".views.admin_area"
-            android:exported="false" />
-        <activity
-            android:name=".views.register"
-            android:exported="false" />
-        <activity
-            android:name=".views.Login"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,10 +28,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".views.Main_page"
+            android:exported="false" />
+
+        <activity
+            android:name=".views.register"
+            android:exported="false" />
+        <activity
+            android:name=".views.Login"
             android:exported="true">
 
         </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

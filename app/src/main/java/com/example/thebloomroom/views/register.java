@@ -11,7 +11,7 @@ import android.widget.Toast;
 import com.example.thebloomroom.AlertMessage;
 import com.example.thebloomroom.R;
 import com.example.thebloomroom.models.User;
-import com.example.thebloomroom.models.UserDBModel;
+import com.example.thebloomroom.models.DBoperations;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.regex.Matcher;
@@ -107,12 +107,39 @@ public class register extends AppCompatActivity {
     public void registerUser(User user){
         try {
 
-            UserDBModel userDBModel = new UserDBModel(this);
-            long id = userDBModel.insert(user);
+            DBoperations DBoperations = new DBoperations(this);
+            long id = DBoperations.insert(user);
             if(id > 0){
                 Intent intent = new Intent(this, Login.class);
                 startActivity(intent);
                 Toast.makeText(getApplicationContext(), "Signed up successfully, please login", Toast.LENGTH_LONG).show();
+            }
+
+        }catch (Exception e){
+
+            AlertMessage.show(this, "Error!", e.getMessage());
+        }
+    }
+
+    public void registerAdmin(View v){
+
+        User user = new User();
+        user.setName("Admin");
+        user.setEmail("admin@admin");
+        user.setPassword("123");
+        user.setAddress("Booloom");
+        user.setTel("123456789");
+        user.setRole("admin");
+
+
+        try {
+
+            DBoperations DBoperations = new DBoperations(this);
+            long id = DBoperations.insert(user);
+            if(id > 0){
+//                Intent intent = new Intent(this, Login.class);
+//                startActivity(intent);
+                Toast.makeText(getApplicationContext(), "admin added successfully!!", Toast.LENGTH_LONG).show();
             }
 
         }catch (Exception e){

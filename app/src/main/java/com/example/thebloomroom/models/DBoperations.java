@@ -3,18 +3,25 @@ package com.example.thebloomroom.models;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+
+import com.example.thebloomroom.AlertMessage;
+import com.example.thebloomroom.views.Manage_Category;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 
-public class UserDBModel extends SQLiteOpenHelper {
+public class DBoperations extends SQLiteOpenHelper {
 
-    public UserDBModel(@Nullable Context context) {
+    public DBoperations(@Nullable Context context) {
         super(context, "Bloom", null, 1);
     }
 
@@ -27,18 +34,33 @@ public class UserDBModel extends SQLiteOpenHelper {
                 "    email VARCHAR(255) NOT NULL," +
                 "    password VARCHAR(255) NOT NULL," +
                 "    address VARCHAR(255)," +
-                "    tel VARCHAR(20),\n" +
+                "    tel VARCHAR(20)," +
                 "    role VARCHAR(50) NOT NULL" +
                 ");";
 
         sqLiteDatabase.execSQL(sql);
+
+        sql = "CREATE TABLE categories (id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "name VARCHAR(255) NOT NULL);";
+
+        try {
+            sqLiteDatabase.execSQL(sql);
+        }
+        catch (SQLException e){
+            Log.e("Name", "Error creating 'categories' table: " + e.getMessage());
+        }
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         String sql = "DROP TABLE IF EXISTS users";
         sqLiteDatabase.execSQL(sql);
+
+        sql = "DROP TABLE IF EXISTS categories;";
+        sqLiteDatabase.execSQL(sql);
     }
+
+    //User operations
 
     public long insert(User user){
         SQLiteDatabase database = getWritableDatabase();
@@ -59,6 +81,8 @@ public class UserDBModel extends SQLiteOpenHelper {
 
         return database.insert("users", null, contentValues);
     }
+
+
 
     public User login(String email, String password){
 
@@ -116,6 +140,56 @@ public class UserDBModel extends SQLiteOpenHelper {
 
         }
         return null; // Return null if hashing fails
+    }
+
+    //category operations
+
+    public long insert(Category category, Manage_Category instance){
+
+        SQLiteDatabase database = getWritableDatabase();
+
+            Log.d("Name", category.getName());
+
+            String sql = "INSERT INTO categories (name) VALUES ('" + category.getName() + "');";
+
+            try {
+                database.execSQL(sql);
+                return 1;
+            }
+            catch (SQLException e){
+                Log.d("Name", e.getMessage());
+                AlertMessage.show(instance, "Error!", e.getMessage());
+                return -1;
+            }
+
+    }
+
+    public ArrayList<Category> getAllCategories(){
+
+        SQLiteDatabase database = getReadableDatabase();
+        String sql = "SELECT * FROM categories;";
+        Cursor cursor = database.rawQuery(sql, null);
+
+        ArrayList<Category> categories = new ArrayList<>();
+
+        if(cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            do {
+                Category category = new Category();
+
+                category.setId(cursor.getInt(0));
+                category.setName(cursor.getString(1));
+
+                categories.add(category);
+
+            } while (cursor.moveToNext());
+        }else {
+            return null;
+        }
+
+        cursor.close();
+        return categories;
+
     }
 
 

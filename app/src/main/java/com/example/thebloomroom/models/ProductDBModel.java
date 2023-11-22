@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -17,15 +18,16 @@ public class ProductDBModel extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        try {
+            String sql = "CREATE TABLE IF NOT EXISTS products ( id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "name VARCHAR(255) NOT NULL, price FLOAT NOT NULL, category INTEGER NOT NULL, image BLOB);";
 
-        String sql = "CREATE TABLE products (" +
-                "    id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "    name VARCHAR(255) NOT NULL," +
-                "    price FLOAT NOT NULL," +
-                "    category INTEGER NOT NULL," +
-                "    image BLOB);";
+            sqLiteDatabase.execSQL(sql);
 
-        sqLiteDatabase.execSQL(sql);
+            Log.d("ProductDBModel", "Table 'products' created successfully");
+        } catch (Exception e) {
+            Log.e("ProductDBModel", "Error creating table 'products': " + e.getMessage());
+        }
     }
 
     @Override
@@ -40,6 +42,7 @@ public class ProductDBModel extends SQLiteOpenHelper {
 
         contentValues.put("name", product.getName());
         contentValues.put("price", product.getPrice());
+        contentValues.put("category", product.getCategoryId());
         contentValues.put("image", product.getImage());
 
         return database.insert("products", null, contentValues);

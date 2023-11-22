@@ -13,6 +13,9 @@
         android:theme="@style/Theme.TheBloomRoom"
         tools:targetApi="31">
         <activity
+            android:name=".views.Add_product"
+            android:exported="false" />
+        <activity
             android:name=".views.Manage_Category"
             android:exported="false" />
         <activity
@@ -20,23 +23,27 @@
             android:exported="false" />
         <activity
             android:name=".views.Admin_dashboard"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="true">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
         <activity
             android:name=".views.Main_page"
             android:exported="false" />
-
         <activity
             android:name=".views.register"
             android:exported="false" />
         <activity
             android:name=".views.Login"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
 
         </activity>
         <activity

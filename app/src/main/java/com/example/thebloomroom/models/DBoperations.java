@@ -28,7 +28,7 @@ public class DBoperations extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
-        String sql = "CREATE TABLE users (" +
+        String sql1 = "CREATE TABLE users (" +
                 "    id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "    name VARCHAR(255) NOT NULL," +
                 "    email VARCHAR(255) NOT NULL," +
@@ -38,17 +38,24 @@ public class DBoperations extends SQLiteOpenHelper {
                 "    role VARCHAR(50) NOT NULL" +
                 ");";
 
-        sqLiteDatabase.execSQL(sql);
-
-        sql = "CREATE TABLE categories (id INTEGER PRIMARY KEY AUTOINCREMENT," +
+        String sql2 = "CREATE TABLE categories (id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "name VARCHAR(255) NOT NULL);";
 
+        String sql3 = "CREATE TABLE products ( id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "name VARCHAR(255) NOT NULL, price FLOAT NOT NULL, category INTEGER NOT NULL, image BLOB);";
+
         try {
-            sqLiteDatabase.execSQL(sql);
+            sqLiteDatabase.execSQL(sql1);
+            sqLiteDatabase.execSQL(sql2);
+            sqLiteDatabase.execSQL(sql3);
         }
         catch (SQLException e){
-            Log.e("Name", "Error creating 'categories' table: " + e.getMessage());
+            Log.e("SQL error", "Error creating 'categories' table: " + e.getMessage());
         }
+
+
+
+
     }
 
     @Override
@@ -190,6 +197,20 @@ public class DBoperations extends SQLiteOpenHelper {
         cursor.close();
         return categories;
 
+    }
+
+    //product operations
+
+    public long insertProduct(Product product) {
+        SQLiteDatabase database = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put("name", product.getName());
+        contentValues.put("price", product.getPrice());
+        contentValues.put("image", product.getImage());
+        contentValues.put("category", product.getCategoryId());
+
+        return database.insert("products", null, contentValues);
     }
 
 

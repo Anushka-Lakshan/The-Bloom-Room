@@ -57,6 +57,10 @@ public class Add_product extends AppCompatActivity implements AdapterView.OnItem
 
         String[] categories = new String[AllCategories.size()];
 
+        if(AllCategories.size() == 0){
+            categories[0] = "No Categories to select";
+        }
+
         for(int i = 0; i < AllCategories.size(); i++){
             categories[i] =  AllCategories.get(i).getId()+" : "+AllCategories.get(i).getName();
         }

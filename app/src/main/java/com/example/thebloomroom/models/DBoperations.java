@@ -213,5 +213,35 @@ public class DBoperations extends SQLiteOpenHelper {
         return database.insert("products", null, contentValues);
     }
 
+    public ArrayList<Product> getAllProducts(){
+
+        SQLiteDatabase database = getReadableDatabase();
+        String sql = "SELECT * FROM products;";
+        Cursor cursor = database.rawQuery(sql, null);
+
+        ArrayList<Product> products = new ArrayList<>();
+
+        if(cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            do {
+                Product product = new Product();
+                product.setId(cursor.getInt(0));
+                product.setName(cursor.getString(1));
+                product.setPrice(cursor.getFloat(2));
+                product.setCategoryId(cursor.getInt(3));
+                product.setImage(cursor.getBlob(4));
+
+                products.add(product);
+
+            } while (cursor.moveToNext());
+        }else {
+            return null;
+        }
+
+        cursor.close();
+        return products;
+
+    }
+
 
 }

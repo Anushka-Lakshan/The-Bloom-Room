@@ -48,7 +48,7 @@ public class ProductDBModel extends SQLiteOpenHelper {
         return database.insert("products", null, contentValues);
     }
 
-    public ArrayList<Product> getAll(){
+    public ArrayList<Product> getAllProducts(){
 
         SQLiteDatabase database = getReadableDatabase();
         String sql = "SELECT * FROM products;";

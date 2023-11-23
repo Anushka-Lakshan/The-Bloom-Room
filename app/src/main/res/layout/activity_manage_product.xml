@@ -34,11 +34,14 @@
 
     <GridView
         android:id="@+id/MP_grid"
-        android:layout_width="376dp"
-        android:layout_height="555dp"
+        android:layout_width="364dp"
+        android:layout_height="501dp"
         android:layout_marginTop="36dp"
         android:numColumns="2"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button4" />
+        app:layout_constraintTop_toBottomOf="@+id/button4"
+        app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

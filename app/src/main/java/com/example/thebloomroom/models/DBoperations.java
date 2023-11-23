@@ -53,7 +53,8 @@ public class DBoperations extends SQLiteOpenHelper {
             Log.e("SQL error", "Error creating 'categories' table: " + e.getMessage());
         }
 
-
+        String sql = "INSERT INTO users (name, email, password, address, tel, role) VALUES" +
+                " ('admin', 'admin@admin', '123', 'nowhere', '123456', 'admin');";
 
 
     }
@@ -87,6 +88,23 @@ public class DBoperations extends SQLiteOpenHelper {
         contentValues.put("role", user.getRole());
 
         return database.insert("users", null, contentValues);
+    }
+
+    public boolean checkEmail(String email){
+
+        SQLiteDatabase database = getReadableDatabase();
+        String sql = "SELECT * FROM users WHERE email = " + "'" + email + "';";
+
+        Cursor cursor = database.rawQuery(sql, null);
+
+        if (cursor.getCount() > 0){
+            cursor.close();
+            return true;
+        }
+        else {
+            cursor.close();
+            return false;
+        }
     }
 
 
@@ -213,10 +231,42 @@ public class DBoperations extends SQLiteOpenHelper {
         return database.insert("products", null, contentValues);
     }
 
+//    public ArrayList<Product> getAllProducts(){
+//
+//        SQLiteDatabase database = getReadableDatabase();
+//        String sql = "SELECT * FROM products;";
+//        Cursor cursor = database.rawQuery(sql, null);
+//
+//        ArrayList<Product> products = new ArrayList<>();
+//
+//        if(cursor.getCount() > 0) {
+//            cursor.moveToFirst();
+//            do {
+//                Product product = new Product();
+//                product.setId(cursor.getInt(0));
+//                product.setName(cursor.getString(1));
+//                product.setPrice(cursor.getFloat(2));
+//                product.setCategoryId(cursor.getInt(3));
+//                product.setImage(cursor.getBlob(4));
+//
+//                products.add(product);
+//
+//            } while (cursor.moveToNext());
+//        }else {
+//            return null;
+//        }
+//
+//        cursor.close();
+//        return products;
+//
+//    }
+
+
     public ArrayList<Product> getAllProducts(){
 
         SQLiteDatabase database = getReadableDatabase();
-        String sql = "SELECT * FROM products;";
+        String sql = "SELECT products.*, categories.name AS category_name FROM products " +
+                "INNER JOIN categories ON products.category = categories.id;";
         Cursor cursor = database.rawQuery(sql, null);
 
         ArrayList<Product> products = new ArrayList<>();
@@ -230,6 +280,7 @@ public class DBoperations extends SQLiteOpenHelper {
                 product.setPrice(cursor.getFloat(2));
                 product.setCategoryId(cursor.getInt(3));
                 product.setImage(cursor.getBlob(4));
+                product.setCategoryName(cursor.getString(5));
 
                 products.add(product);
 
@@ -242,6 +293,7 @@ public class DBoperations extends SQLiteOpenHelper {
         return products;
 
     }
+
 
 
 }

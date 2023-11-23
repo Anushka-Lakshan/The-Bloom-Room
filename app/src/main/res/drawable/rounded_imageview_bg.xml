@@ -1,0 +1,8 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#FFFFFF" /> <!-- Set the background color of the ImageView -->
+    <corners android:radius="20dp" /> <!-- Adjust the radius to control the roundness -->
+    <stroke
+        android:width="4dp"
+        android:color="@color/Primary" />
+</shape>

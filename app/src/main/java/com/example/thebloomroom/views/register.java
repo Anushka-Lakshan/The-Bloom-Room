@@ -89,6 +89,11 @@ public class register extends AppCompatActivity {
             error += "\nInvalid Email address.";
         }
 
+        DBoperations DBoperations = new DBoperations(this);
+        if(DBoperations.checkEmail(emailText)){
+            error += "\nEmail already exists.";
+        }
+
         if(error != ""){
             AlertMessage.show(this, "Attention!", error);
         }else{

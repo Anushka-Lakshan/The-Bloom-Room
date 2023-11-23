@@ -61,9 +61,11 @@ public class Login extends AppCompatActivity {
                 }else {
                     Intent intent = new Intent(this, Main_page.class);
                     intent.putExtra("user", user.getName());
+                    intent.putExtra("user_id", user.getId());
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     Toast.makeText(this, "Welcome " + user.getName(), Toast.LENGTH_SHORT).show();
                     startActivity(intent);
+                    finish();
                 }
             }
         }

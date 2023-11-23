@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -94,17 +95,23 @@ public class Add_product extends AppCompatActivity implements AdapterView.OnItem
 
         if(requestCode == 111 && resultCode == RESULT_OK && data != null){
             Uri uri = data.getData();
-            try {
 
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-                ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, arrayOutputStream);
-                imagebytes = arrayOutputStream.toByteArray();
-                ProductImage.setImageBitmap(bitmap);
+            byte[] CompressedImagebytes = compressAndResizeImage(uri);
+            ProductImage.setImageBitmap(BitmapFactory.decodeByteArray(CompressedImagebytes, 0, CompressedImagebytes.length));
 
-            } catch (IOException e) {
-                Log.e("Error", e.getMessage());
-            }
+            this.imagebytes = CompressedImagebytes;
+
+//            try {
+//
+//                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+//                ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
+//                bitmap.compress(Bitmap.CompressFormat.PNG, 20, arrayOutputStream);
+//                imagebytes = arrayOutputStream.toByteArray();
+//                ProductImage.setImageBitmap(bitmap);
+//
+//            } catch (IOException e) {
+//                Log.e("Error", e.getMessage());
+//            }
         }
     }
 
@@ -182,4 +189,53 @@ public class Add_product extends AppCompatActivity implements AdapterView.OnItem
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
+
+    //image compression methods
+
+    public byte[] compressAndResizeImage(Uri uri) {
+        Bitmap bitmap = null;
+        try {
+            // Get the original bitmap from the URI
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true; // Just decode the bounds, not the whole image
+            BitmapFactory.decodeStream(getContentResolver().openInputStream(uri), null, options);
+
+            // Calculate the inSampleSize to resize the image to 400x400
+            options.inSampleSize = calculateInSampleSize(options, 400, 400);
+
+            // Decode the image with the calculated sample size
+            options.inJustDecodeBounds = false;
+            bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri), null, options);
+
+            // Compress the bitmap to reduce its size
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream); // Adjust quality as needed
+
+            return byteArrayOutputStream.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (bitmap != null) {
+                bitmap.recycle(); // Recycle the bitmap to free up memory
+            }
+        }
+        return null;
+    }
+
+    private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            while ((halfHeight / inSampleSize) >= reqHeight && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+        return inSampleSize;
+    }
+
 }

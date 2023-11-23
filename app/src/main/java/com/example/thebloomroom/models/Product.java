@@ -4,7 +4,7 @@ public class Product {
 
     public int id,categoryId;
 
-    public String name;
+    public String name,categoryName;
     public float price;
     public byte[] image;
 
@@ -26,6 +26,14 @@ public class Product {
 
     public Product() {
 
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     public int getId() {

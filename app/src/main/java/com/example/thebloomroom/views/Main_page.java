@@ -114,7 +114,12 @@ public class Main_page extends AppCompatActivity implements AdapterView.OnItemSe
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         if (i < products.size()) {
-                            Toast.makeText(getApplicationContext(), "Product ID: " + products.get(i).getName(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Selected Product: " + products.get(i).getName(), Toast.LENGTH_SHORT).show();
+
+                            Intent intent = new Intent(getApplicationContext(), Product_details.class);
+                            intent.putExtra("UserID", UserID);
+                            intent.putExtra("product", products.get(i).getId());
+                            startActivity(intent);
                         }
                     }
                 });
@@ -130,4 +135,6 @@ public class Main_page extends AppCompatActivity implements AdapterView.OnItemSe
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
+
+
 }

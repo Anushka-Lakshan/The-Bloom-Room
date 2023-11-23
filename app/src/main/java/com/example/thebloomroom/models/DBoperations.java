@@ -44,10 +44,14 @@ public class DBoperations extends SQLiteOpenHelper {
         String sql3 = "CREATE TABLE products ( id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "name VARCHAR(255) NOT NULL, price FLOAT NOT NULL, category INTEGER NOT NULL, image BLOB);";
 
+        String sql4 = "CREATE TABLE IF NOT EXISTS cart (id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "user INTEGER NOT NULL, productName VARCHAR(255) NOT NULL, price FLOAT NOT NULL, quantity INTEGER NOT NULL);";
+
         try {
             sqLiteDatabase.execSQL(sql1);
             sqLiteDatabase.execSQL(sql2);
             sqLiteDatabase.execSQL(sql3);
+            sqLiteDatabase.execSQL(sql4);
         }
         catch (SQLException e){
             Log.e("SQL error", "Error creating 'categories' table: " + e.getMessage());
@@ -292,6 +296,49 @@ public class DBoperations extends SQLiteOpenHelper {
         cursor.close();
         return products;
 
+    }
+
+    public Product getProductById(int id) {
+        SQLiteDatabase database = getReadableDatabase();
+        String sql = "SELECT products.*, categories.name AS category_name FROM products " +
+                "INNER JOIN categories ON products.category = categories.id WHERE products.id = " + id + ";";
+        Cursor cursor = database.rawQuery(sql, null);
+
+        Product product = null;
+
+        if (cursor != null && cursor.moveToFirst()) {
+            product = new Product();
+            product.setId(cursor.getInt(0));
+            product.setName(cursor.getString(1));
+            product.setPrice(cursor.getFloat(2));
+            product.setCategoryId(cursor.getInt(3));
+            product.setImage(cursor.getBlob(4));
+            product.setCategoryName(cursor.getString(5));
+        }
+
+        if (cursor != null) {
+            cursor.close();
+        }
+
+        return product;
+    }
+
+    //cart operations
+
+    public boolean addToCart(CartItem cartItem){
+
+        SQLiteDatabase database = getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put("user", cartItem.getUserID());
+        contentValues.put("productName", cartItem.getProductName());
+        contentValues.put("price", cartItem.getPrice());
+        contentValues.put("quantity", cartItem.getQuantity());
+
+        long result = database.insert("cart", null, contentValues);
+
+        return result != -1;
     }
 
 

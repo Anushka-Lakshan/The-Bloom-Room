@@ -24,6 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:onClick="gotoMain"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.077"
         app:layout_constraintStart_toStartOf="parent"
@@ -79,6 +80,7 @@
             android:id="@+id/constraintLayout311"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:onClick="gotoCart"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -113,6 +115,7 @@
             android:id="@+id/constraintLayout3"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:onClick="gotoMain"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.116"
             app:layout_constraintStart_toStartOf="parent"
@@ -145,4 +148,27 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/button12"
+        android:layout_width="275dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="96dp"
+        android:text="Update Account Details"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView22" />
+
+    <Button
+        android:id="@+id/button13"
+        android:layout_width="275dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="180dp"
+        android:backgroundTint="#E53935"
+        android:onClick="Logout"
+        android:text="Logout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView22" />
 </androidx.constraintlayout.widget.ConstraintLayout>

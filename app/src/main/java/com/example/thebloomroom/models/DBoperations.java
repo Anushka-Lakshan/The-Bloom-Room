@@ -17,7 +17,9 @@ import com.example.thebloomroom.views.Manage_Category;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class DBoperations extends SQLiteOpenHelper {
 
@@ -47,11 +49,15 @@ public class DBoperations extends SQLiteOpenHelper {
         String sql4 = "CREATE TABLE IF NOT EXISTS cart (id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "user INTEGER NOT NULL, productName VARCHAR(255) NOT NULL, price FLOAT NOT NULL, quantity INTEGER NOT NULL,productID INTEGER NOT NULL);";
 
+        String sql5 = "CREATE TABLE IF NOT EXISTS orders (id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "user INTEGER NOT NULL, items VARCHAR(500) NOT NULL, total FLOAT NOT NULL, orderDate VARCHAR(255));";
+
         try {
             sqLiteDatabase.execSQL(sql1);
             sqLiteDatabase.execSQL(sql2);
             sqLiteDatabase.execSQL(sql3);
             sqLiteDatabase.execSQL(sql4);
+            sqLiteDatabase.execSQL(sql5);
         }
         catch (SQLException e){
             Log.e("SQL error", "Error creating 'categories' table: " + e.getMessage());
@@ -390,6 +396,64 @@ public class DBoperations extends SQLiteOpenHelper {
         catch (SQLException e){
             Log.d("SQL error", e.getMessage());
         }
+    }
+
+    //order operations
+
+    public boolean addOrder(Order order){
+
+        SQLiteDatabase database = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put("user", order.getUserID());
+        contentValues.put("items", order.getItems());
+        contentValues.put("total", order.getTotal());
+
+        // Get current date and time using Calendar
+        Calendar calendar = Calendar.getInstance();
+        // Format date and time
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = dateFormat.format(calendar.getTime());
+
+
+        contentValues.put("orderDate", formattedDateTime);
+
+        long result = database.insert("orders", null, contentValues);
+
+        if(result == -1){
+            return false;
+        }
+        else{
+            return true;
+        }
+
+    }
+
+    public ArrayList<Order> getAllOrders(){
+        SQLiteDatabase database = getReadableDatabase();
+        String sql = "SELECT orders.*, users.name AS user_name, users.email AS user_email,users.address AS user_address" +
+                " FROM orders INNER JOIN users ON orders.user = users.id ORDER BY id DESC;";
+
+        Cursor cursor = database.rawQuery(sql, null);
+        ArrayList<Order> orders = new ArrayList<>();
+
+        if(cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            do {
+                Order order = new Order();
+                order.setOrderID(cursor.getInt(0));
+                order.setUserID(cursor.getInt(1));
+                order.setItems(cursor.getString(2));
+                order.setTotal(cursor.getFloat(3));
+                order.setOrderDate(cursor.getString(4));
+                order.setUserName(cursor.getString(5));
+                order.setUserEmail(cursor.getString(6));
+                order.setUserAddress(cursor.getString(7));
+                orders.add(order);
+            } while (cursor.moveToNext());
+        }
+
+        return orders;
     }
 
 

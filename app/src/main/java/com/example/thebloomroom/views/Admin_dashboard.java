@@ -26,4 +26,15 @@ public class Admin_dashboard extends AppCompatActivity {
         Intent i = new Intent(this, Manage_Category.class);
         startActivity(i);
     }
+
+    public void gotoManageOrders(View view) {
+        Intent i = new Intent(this, ManageOrders.class);
+        startActivity(i);
+    }
+
+    public void logout(View view){
+        Intent intent = new Intent(this, Login.class);
+        startActivity(intent);
+        finish();
+    }
 }

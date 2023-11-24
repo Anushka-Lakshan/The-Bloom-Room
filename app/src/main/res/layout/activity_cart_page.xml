@@ -245,6 +245,7 @@
         android:layout_height="47dp"
         android:layout_marginTop="16dp"
         android:backgroundTint="#F4511E"
+        android:onClick="Checkout"
         android:text="Place order"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.413"

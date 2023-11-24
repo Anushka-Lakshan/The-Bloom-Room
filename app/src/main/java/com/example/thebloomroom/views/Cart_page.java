@@ -2,7 +2,10 @@ package com.example.thebloomroom.views;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
@@ -10,9 +13,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.thebloomroom.Adaptors.CartAdaptor;
+import com.example.thebloomroom.AlertMessage;
 import com.example.thebloomroom.R;
 import com.example.thebloomroom.models.CartItem;
 import com.example.thebloomroom.models.DBoperations;
+import com.example.thebloomroom.models.Order;
 
 import java.util.ArrayList;
 
@@ -26,6 +31,8 @@ public class Cart_page extends AppCompatActivity {
 
     ArrayList<CartItem> cartItems;
     DBoperations dboperations;
+
+    double GrandoTotal = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +143,45 @@ public class Cart_page extends AppCompatActivity {
         this.total.setText("Rs. " + String.valueOf(total));
         this.handling.setText("Rs. " + String.valueOf(handling));
         this.grandTotal.setText("Rs. " + String.valueOf(total + handling));
+
+        this.GrandoTotal = total + handling;
+    }
+
+    public void Checkout(View view){
+        if(cartItems == null){
+            AlertMessage.show(this,"Attention!", "Cart is empty");
+            return;
+        }
+
+        Order order = new Order();
+
+        order.setUserID(UserID);
+        order.setGrandTotal(this.GrandoTotal);
+
+        String itemsDetails = "";
+
+        int i = 1;
+        for(CartItem cartItem : cartItems){
+            itemsDetails += "## Item" + i + "##\n" +
+                    "Name: " + cartItem.getProductName() + "\n" +
+                    "UnitPrice: " + cartItem.getPrice() + "\n" +
+                    "Quantity: " + cartItem.getQuantity() + "\n\n" ;
+
+            i++;
+        }
+
+        order.setItems(itemsDetails);
+
+        if(dboperations.addOrder(order)){
+            dboperations.clearCart(UserID);
+            recreate();
+            AlertMessage.show(this,"Congratulations!", "Order placed successfully");
+            Toast.makeText(this, "Order placed successfully", Toast.LENGTH_SHORT).show();
+            createNotificationChannel();
+        }
+        else{
+            AlertMessage.show(this,"Error!", "Something went wrong");
+        }
     }
 
 
@@ -151,6 +197,20 @@ public class Cart_page extends AppCompatActivity {
         intent.putExtra("UserID", UserID);
         intent.putExtra("user", UserName);
         startActivity(intent);
+    }
+
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "The Bloom Room";
+            String description = "Your Order Placed Successfully!";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("MyChannelId", name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
 

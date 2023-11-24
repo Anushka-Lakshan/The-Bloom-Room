@@ -80,7 +80,7 @@ public class Main_page extends AppCompatActivity implements AdapterView.OnItemSe
         if (adapterView.getId() == R.id.FilterSpinner) {
             String selectedCategoryName = adapterView.getItemAtPosition(i).toString();
             this.selectedCategory = selectedCategoryName;
-            Toast.makeText(this, "Selected Category: " + selectedCategoryName, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Selected Category: " + selectedCategoryName, Toast.LENGTH_SHORT).show();
 
             showProducts();
         }

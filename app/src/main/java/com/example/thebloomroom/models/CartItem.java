@@ -3,10 +3,28 @@ package com.example.thebloomroom.models;
 public class CartItem {
 
     private int id;
-    private int userID;
+    private int userID, productID;
     private String productName;
     private float price;
     private int quantity;
+
+    private byte[] image;
+
+    public int getProductID() {
+        return productID;
+    }
+
+    public void setProductID(int productID) {
+        this.productID = productID;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
 
     public int getId() {
         return id;

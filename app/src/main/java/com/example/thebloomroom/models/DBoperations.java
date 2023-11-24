@@ -45,7 +45,7 @@ public class DBoperations extends SQLiteOpenHelper {
                 "name VARCHAR(255) NOT NULL, price FLOAT NOT NULL, category INTEGER NOT NULL, image BLOB);";
 
         String sql4 = "CREATE TABLE IF NOT EXISTS cart (id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "user INTEGER NOT NULL, productName VARCHAR(255) NOT NULL, price FLOAT NOT NULL, quantity INTEGER NOT NULL);";
+                "user INTEGER NOT NULL, productName VARCHAR(255) NOT NULL, price FLOAT NOT NULL, quantity INTEGER NOT NULL,productID INTEGER NOT NULL);";
 
         try {
             sqLiteDatabase.execSQL(sql1);
@@ -57,10 +57,15 @@ public class DBoperations extends SQLiteOpenHelper {
             Log.e("SQL error", "Error creating 'categories' table: " + e.getMessage());
         }
 
-        String sql = "INSERT INTO users (name, email, password, address, tel, role) VALUES" +
+        String sqlAddAdmin = "INSERT INTO users (name, email, password, address, tel, role) VALUES" +
                 " ('admin', 'admin@admin', '123', 'nowhere', '123456', 'admin');";
 
-
+        try {
+            sqLiteDatabase.execSQL(sqlAddAdmin);
+        }
+        catch (SQLException e){
+            Log.e("SQL error", "Error creating 'users' table: " + e.getMessage());
+        }
     }
 
     @Override
@@ -235,35 +240,6 @@ public class DBoperations extends SQLiteOpenHelper {
         return database.insert("products", null, contentValues);
     }
 
-//    public ArrayList<Product> getAllProducts(){
-//
-//        SQLiteDatabase database = getReadableDatabase();
-//        String sql = "SELECT * FROM products;";
-//        Cursor cursor = database.rawQuery(sql, null);
-//
-//        ArrayList<Product> products = new ArrayList<>();
-//
-//        if(cursor.getCount() > 0) {
-//            cursor.moveToFirst();
-//            do {
-//                Product product = new Product();
-//                product.setId(cursor.getInt(0));
-//                product.setName(cursor.getString(1));
-//                product.setPrice(cursor.getFloat(2));
-//                product.setCategoryId(cursor.getInt(3));
-//                product.setImage(cursor.getBlob(4));
-//
-//                products.add(product);
-//
-//            } while (cursor.moveToNext());
-//        }else {
-//            return null;
-//        }
-//
-//        cursor.close();
-//        return products;
-//
-//    }
 
 
     public ArrayList<Product> getAllProducts(){
@@ -335,12 +311,86 @@ public class DBoperations extends SQLiteOpenHelper {
         contentValues.put("productName", cartItem.getProductName());
         contentValues.put("price", cartItem.getPrice());
         contentValues.put("quantity", cartItem.getQuantity());
+        contentValues.put("productID", cartItem.getProductID());
 
         long result = database.insert("cart", null, contentValues);
 
-        return result != -1;
+        if(result == -1){
+            return false;
+        }else{
+            return true;
+        }
     }
 
+    public ArrayList<CartItem> getCart(int userID){
+
+        SQLiteDatabase database = getReadableDatabase();
+        String sql = "SELECT * FROM cart WHERE user = " + userID + ";";
+
+        Cursor cursor = database.rawQuery(sql, null);
+        ArrayList<CartItem> cartItems = new ArrayList<>();
+
+        if(cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            do {
+                CartItem cartItem = new CartItem();
+                cartItem.setId(cursor.getInt(0));
+                cartItem.setUserID(cursor.getInt(1));
+                cartItem.setProductName(cursor.getString(2));
+                cartItem.setPrice(cursor.getFloat(3));
+                cartItem.setQuantity(cursor.getInt(4));
+                cartItem.setProductID(cursor.getInt(5));
+                cartItems.add(cartItem);
+            } while (cursor.moveToNext());
+        }else {
+            return null;
+        }
+
+        cursor.close();
+        return cartItems;
+
+    }
+
+    public void deleteCartItem(int userID, int productID){
+
+        SQLiteDatabase database = getReadableDatabase();
+        String sql = "DELETE FROM cart WHERE user = " + userID + " AND productID = " + productID + ";";
+
+        try {
+            database.execSQL(sql);
+
+        }
+        catch (SQLException e){
+            Log.d("SQL error", e.getMessage());
+
+        }
+    }
+
+    public void clearCart(int userID){
+
+        SQLiteDatabase database = getReadableDatabase();
+        String sql = "DELETE FROM cart WHERE user = " + userID + ";";
+
+        try {
+            database.execSQL(sql);
+        }
+        catch (SQLException e){
+            Log.d("SQL error", e.getMessage());
+        }
+    }
+
+    public void updateQuantity(int userID, int productID, int quantity){
+
+        SQLiteDatabase database = getReadableDatabase();
+        String sql = "UPDATE cart SET quantity = " + quantity + " WHERE user = " + userID + " AND productID = " + productID + ";";
+
+        try {
+            database.execSQL(sql);
+        }
+        catch (SQLException e){
+            Log.d("SQL error", e.getMessage());
+        }
+    }
 
 
 }

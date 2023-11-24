@@ -82,6 +82,7 @@ public class Product_details extends AppCompatActivity {
         cartItem.setProductName(productName);
         cartItem.setPrice(price);
         cartItem.setQuantity(quantity);
+        cartItem.setProductID(productID);
 
         if(dboperations.addToCart(cartItem)){
             AlertMessage.show(this, "Success", "Product added to cart");

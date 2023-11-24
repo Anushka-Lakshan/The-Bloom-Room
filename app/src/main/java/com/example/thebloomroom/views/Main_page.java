@@ -39,7 +39,7 @@ public class Main_page extends AppCompatActivity implements AdapterView.OnItemSe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
 
-        UserID = getIntent().getIntExtra("UserID", 0);
+        UserID = getIntent().getIntExtra("user_id", 0);
         UserName = getIntent().getStringExtra("user");
         gridView = findViewById(R.id.UserProducts);
 
@@ -136,5 +136,17 @@ public class Main_page extends AppCompatActivity implements AdapterView.OnItemSe
 
     }
 
+    public void gotoCart(View view){
+        Intent intent = new Intent(this, Cart_page.class);
+        intent.putExtra("UserID", this.UserID);
+        intent.putExtra("user", UserName);
+        startActivity(intent);
+    }
 
+    public void gotoProfile(View view){
+        Intent intent = new Intent(this, Settigns_page.class);
+        intent.putExtra("UserID", UserID);
+        intent.putExtra("user", UserName);
+        startActivity(intent);
+    }
 }

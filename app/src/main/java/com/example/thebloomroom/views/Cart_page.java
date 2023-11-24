@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.thebloomroom.Adaptors.CartAdaptor;
@@ -21,6 +22,7 @@ public class Cart_page extends AppCompatActivity {
     String UserName;
 
     ListView listView;
+    TextView total,handling,grandTotal;
 
     ArrayList<CartItem> cartItems;
     DBoperations dboperations;
@@ -35,6 +37,9 @@ public class Cart_page extends AppCompatActivity {
         UserName = getIntent().getStringExtra("user");
 
         listView = findViewById(R.id.cartList);
+        total = findViewById(R.id.txtTotal);
+        handling = findViewById(R.id.txtHandFee);
+        grandTotal = findViewById(R.id.txtSubTotal);
 
         dboperations = new DBoperations(this);
 
@@ -57,6 +62,8 @@ public class Cart_page extends AppCompatActivity {
             CartAdaptor cartAdaptor = new CartAdaptor(this, cartItems);
             listView.setAdapter(cartAdaptor);
         }
+
+        calculateTotal();
     }
 
     public void clearCart(View view){
@@ -106,6 +113,29 @@ public class Cart_page extends AppCompatActivity {
         }
 
 
+    }
+
+    public void calculateTotal(){
+        double total = 0;
+        double handling = 0;
+
+        if(cartItems == null){
+            this.total.setText("Rs. " + String.valueOf(total));
+            this.handling.setText("Rs. " + String.valueOf(handling));
+            this.grandTotal.setText("Rs. " + String.valueOf(total + handling));
+
+            return;
+        }
+
+        for(CartItem cartItem : cartItems){
+            total += cartItem.getPrice() * cartItem.getQuantity();
+        }
+
+        handling = total * 0.05;
+
+        this.total.setText("Rs. " + String.valueOf(total));
+        this.handling.setText("Rs. " + String.valueOf(handling));
+        this.grandTotal.setText("Rs. " + String.valueOf(total + handling));
     }
 
 

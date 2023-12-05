@@ -47,9 +47,9 @@ Download the APK from Build app folder
 
 ## Diagrams
 
-- Use case diagram
+#### Use case diagram
 ![Usecase diagram](readme_imgs/diagrams/useCase.jpg)
-- Class diagram
+#### Class diagram
 ![Class diagram](readme_imgs/diagrams/class%20diagram.jpg)
 
 
